@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Superhero Details</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f0f0f0;
+    }
+
+    .Superhero-Details {
+      background-color: #e23636;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+
+    .superhero-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .superhero-card img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .superhero-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: #e23636;
+      margin-bottom: 5px;
+    }
+
+    .superhero-description {
+      color: #666;
+    }
+    .container{
+      padding-left: 280px;
+    }
+
+
+    .favourite-page{
+      position: absolute; 
+       right: 30px; 
+        top: 20px;
+        -webkit-text-stroke-color: #e23636;
+        
+    }
+
+    .favorite-button {
+      font-size: 24px;
+      color: #e23636;
+      cursor: pointer;
+      margin-top: 500px;
+    }
+    
+    .footer {
+      position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color:#e23636;
+        color: white;
+        text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="Superhero-Details"><h1>Superhero Details</h1></div>
+  <div id="superheroDetails">
+    <!-- Superhero details will be displayed here -->
+  </div>
+
+  <script>const publicKey = 'f816046b07d18b373b7a19e5d4f8d5a1';
+    const baseUrl = 'https://gateway.marvel.com/v1/public/';
+    const superheroDetailsContainer = document.getElementById('superheroDetails');
+    let id = window.location.search.split('id=')[1];
+    // Function to fetch superhero data from the Marvel API
+    async function fetchSuperheroDetails(id) {
+      const response = await fetch(`${baseUrl}characters/${id}?ts=1&apikey=${publicKey}&hash=e229e76924b97dc4fa3779592d8780d4`);
+      const data = await response.json();
+      return data.data.results[0];
+    }
+    
+    // Function to display superhero details
+    function displaySuperheroDetails(superhero) {
+      superheroDetailsContainer.innerHTML = `
+      <div class="container">
+      <div class="row">
+        <div class="col-md-10">
+        <div class="superhero-card">
+          <img src="${superhero.thumbnail.path}.${superhero.thumbnail.extension}" alt="${superhero.name}">
+          <div class="superhero-name"><b><h3>${superhero.name}</h3></b></div>
+          <p>${superhero.description}</p>
+          <h6 class="card-subtitle mb-2">Comics:</h6>
+          <ul>
+            ${superhero.comics.items.map(comic => `<li>${comic.name}</li>`).join('')}
+          </ul>
+          <!-- Stories -->
+          <h6 class="card-subtitle mb-2">Stories:</h6>
+          <ul>
+            ${superhero.stories.items.map(story => `<li>${story.name}</li>`).join('')}
+          </ul>
+          <!-- Series -->
+          <h6 class="card-subtitle mb-2">Series:</h6>
+          <ul>
+            ${superhero.series.items.map(series => `<li>${series.name}</li>`).join('')}
+          </ul>
+          <!-- Events -->
+          <h6 class="card-subtitle mb-2">Events:</h6>
+          <ul>
+            ${superhero.events.items.map(event => `<li>${event.name}</li>`).join('')}
+          </ul>
+      
+
+          </div>
+        </div>
+      </div>
+      </div>
+      `;
+    }
+    
+    // Get the superhero ID from the URL query parameter
+    const superheroId=id;
+    
+    // Fetch and display the superhero details
+    if (superheroId) {
+      fetchSuperheroDetails(superheroId)
+        .then((superhero) => displaySuperheroDetails(superhero))
+        .catch((error) => console.error('Error fetching superhero details:', error));
+    }
+    </script>
+    <div class="footer">
+    <p>&copy; 2023 Marvel</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>homepage</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  
+  <!-- Font Awesome CSS -->
+ 
+  <!-- Custom CSS -->
+    <style>
+      body {
+        background-color: #f0f0f0;
+      }
+  
+      .header {
+        background-color: #e23636;
+        padding: 20px;
+        text-align: center;
+        color: #fff;
+        font-size: 24px;
+        font-weight: bold;
+      }
+  
+      .container {
+        margin:auto;
+
+      }
+  
+      .character-card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;  
+        height:380px;
+        width:100%;
+      }
+  
+      .character-card img {
+        max-width: 100%;
+        border-radius: 10px;
+        height:200px;
+        margin-bottom: 10px;
+        width: 100%;
+      
+      }
+  
+      .character-name {
+        font-size: 20px;
+        font-weight: bold;
+        color: #e23636;
+        margin-bottom: 5px;
+      }
+  
+      .character-description {
+        color: #666;
+      }
+  
+      .search-bar {
+        margin-bottom: 20px;
+      }
+      .favourite-page{
+        position: absolute; 
+         right: 30px; 
+          top: 20px;
+          -webkit-text-stroke-color: #e23636;
+          
+      }
+      * {
+  box-sizing: border-box;
+}
+
+.col-md-3 {
+  float: left;
+  width: 33.33%;
+  padding: 5px;
+}
+
+  
+      .favorite-button {
+        font-size: 24px;
+        color: #e23636;
+        cursor: pointer;
+        margin-top: 500px;
+      }
+      
+      .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color:#e23636;
+        color: white;
+        text-align: center;
+
+      }
+    </style>
+</head>
+<body>
+    <!-- Home Page -->
+<div class="header">
+  <h1>Marvel Page</h1>
+  
+</div>
+ <div class="container pt-3" >
+  <div class="search-bar">
+    <div class="input-group">
+      <input type="text" id="searchInput" placeholder="Search superhero">
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+  </div>
+  <!-- Fetching and display sh on page load begin-->
+  <div id="heroList">
+    <div class="row"></div>
+  </div>
+  <!-- Fetching and display sh on page load end-->
+  <div id="searchResults"></div>
+   <button type="button" class="btn btn-primary" style="position: absolute; right: 30px;top: 120px;"><a style="text-decoration: none;color: black;" href="favaoritespage.html"  target="_blank">Favourite Page</a></button>
+</div>
+
+<!-- Superhero Page -->
+<div id="superheroPage" style="display: none;">
+  <h1 id="superheroName"></h1>
+  <img id="superheroImage" src="" alt="Superhero Image">
+  <p id="superheroBio"></p>
+</div>
+
+<!-- My favourite superheroes Page -->
+<div id="favoritePage" style="display: none;">
+ 
+  <h2>My Favorite Superheroes</h2>
+  <ul id="favoriteList"></ul>
+</div>
+<script>
+  //Fetching and display sh on page load begin
+  const publicKey = 'f816046b07d18b373b7a19e5d4f8d5a1';
+  const baseUrl = 'https://gateway.marvel.com:443/v1/public/characters';
+
+  // Function to fetch superhero data from the Marvel API
+  async function fetchSuperheroes() {
+      const response = await fetch(`${baseUrl}?ts=1&apikey=${publicKey}&hash=e229e76924b97dc4fa3779592d8780d4`);
+      const data = await response.json();
+      return data.data.results;
+  }
+
+  // Function to display superheroes on the page
+  function displaySuperheroes(superheroes) {
+      const heroList = document.getElementById('heroList');
+      heroList.innerHTML = '';
+
+      superheroes.forEach(hero => {
+          const listItem = document.createElement('div');
+          listItem.classList.add('heroList');
+          listItem.innerHTML=`
+          <div class="col-md-3">
+              <div class="character-card">
+                  <a href="superherodetails.html?id=${hero.id}" target="_blank"><img style="height: 200px;" src="${hero.thumbnail.path}.${hero.thumbnail.extension}" alt="${hero.name}"></a>
+                  <div class="character-name">${hero.name}</div>
+              </div>
+          </div>`
+      heroList.appendChild(listItem);
+      });
+  }
+  
+  // Initial load of superheroes
+  fetchSuperheroes().then(displaySuperheroes);
+  //Fetching and display sh on page load begin
+
+  ////////////////////////////////////////////////
+  // Search for super heros code begin
+  let characters;
+  document.addEventListener('DOMContentLoaded', () => {
+
+  const publicKey = 'f816046b07d18b373b7a19e5d4f8d5a1';
+  const baseURL = "https://gateway.marvel.com:443/v1/public/characters?ts=1&apikey=f816046b07d18b373b7a19e5d4f8d5a1&hash=e229e76924b97dc4fa3779592d8780d4";
+
+  // Helper function to fetch data from the Marvel API
+  async function fetchData(url) {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  // Display search results on the home page
+  async function displaySearchResults(searchQuery) {
+    const searchResults = document.getElementById('searchResults');
+    searchResults.innerHTML = '';
+    //const searchResults = document.getElementById("searchResults");
+    let rowContent = "";
+
+    const fullURL = `${baseURL}&nameStartsWith=${searchQuery}`;
+    const data = await fetchData(fullURL);
+
+    characters = data.data.results;
+    characters.forEach(character => {
+      const characterElement = document.createElement('div');
+      characterElement.classList.add('searchResult');
+      characterElement.innerHTML = `
+      <div class="col-md-3">
+        <div class="character-card">
+          <a href="superherodetails.html?id=${character.id}"  target="_blank"><img src="${character.thumbnail.path}.${character.thumbnail.extension}" alt="${character.name}"></a>
+          <span class="message_${character.id}" style='diplay:none'></span><br>
+          <button class="favoriteButton btn btn-primary" data-id="${character.id}">Favorite</button>
+          <div class="character-name">${character.name}</div>
+      <!-- Add more character cards here -->
+      </div>
+    </div>
+  `;
+      characterElement.querySelector('.favoriteButton').addEventListener('click', addToFavorites);
+      searchResults.appendChild(characterElement);
+    });
+  }
+
+
+  // Handle search input
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', () => {
+    document.getElementById('heroList').style.display = 'none';
+    const searchQuery = searchInput.value.trim().toLowerCase();
+    if(searchQuery === ''){
+      document.getElementById('heroList').style.display = 'block';
+    }
+    displaySearchResults(searchQuery);
+  });
+      
+  
+   
+  // Add superhero to favorites
+  function addToFavorites(event) {
+    const characterId = event.target.dataset.id;
+    const character = characters.find(char => char.id === parseInt(characterId));
+
+    if (character) {
+      favoriteSuperheroes.push(character);
+      saveFavorites();
+      displayFavorites();
+    }
+    var message = document.getElementsByClassName('message_'+characterId)[0];
+    message.innerHTML = 'Added to Favourites';
+    message.style.display = 'block';
+    message.style.color = 'green';
+
+  }
+
+    async function myFunction(id) {
+        document.getElementById("demo").innerHTML = id;
+   }
+
+  // Display favorites on the favorite page
+  function displayFavorites() {
+    const favoriteList = document.getElementById('favoriteList');
+    favoriteList.innerHTML = '';
+
+    favoriteSuperheroes.forEach(character => {
+      const favoriteElement = document.createElement('li');
+      favoriteElement.innerHTML = `
+        <span>${character.name}</span>
+        <button class="removeButton" data-id="${character.id}">Remove from favorites</button>
+      `;
+      
+      favoriteElement.querySelector('.removeButton').addEventListener('click', removeFromFavorites);
+      favoriteList.appendChild(favoriteElement);
+    });
+  }
+
+  // Remove superhero from favorites
+  function removeFromFavorites(event) {
+    const characterId = event.target.dataset.id;
+    favoriteSuperheroes = favoriteSuperheroes.filter(char => char.id !== parseInt(characterId));
+    saveFavorites();
+    displayFavorites();
+  }
+
+  // Save favorites to local storage
+  function saveFavorites() {
+    localStorage.setItem('favoriteSuperheroes', JSON.stringify(favoriteSuperheroes));
+  }
+
+  // Retrieve favorites from local storage on page load
+  let favoriteSuperheroes = JSON.parse(localStorage.getItem('favoriteSuperheroes')) || [];
+  displayFavorites();
+});
+
+</script>
+<div class="footer">
+  <p>&copy; 2023 Marvel</p>
+</div>
+
+</body>
+</html>
+

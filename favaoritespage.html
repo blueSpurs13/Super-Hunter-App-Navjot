@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Favorite Superheroes</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+ 
+  
+  <style>
+    body {
+      background-color: #f0f0f0;
+    }
+
+    .favouriteSuperheroes {
+      background-color: #e23636;
+      padding: 10px;
+      text-align: center;
+      color: #fff;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .superhero-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+      height:400px;
+      width:100%;
+    }
+
+    .superhero-card img {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      margin-bottom: 10px;
+      width: 100%;
+      height:220px;
+    }
+
+    .superhero-name {
+      font-size: 18px;
+      font-weight: bold;
+      color: #e23636;
+      margin-bottom: 5px;
+      padding-top: 2px;
+    }
+
+    .character-description {
+      color: #666;
+    }
+    * {
+  box-sizing: border-box;
+}
+
+.col-md-2 {
+  float: left;
+  width: 33.33%;
+  padding: 5px;
+}
+
+    .removeButton {
+      
+      color: #e23636;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    
+    .footer {
+      position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color:#e23636;
+        color: white;
+        text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="favouriteSuperheroes"><h1>My Favourite Superheroes</h1></div>
+  <div id="favoriteSuperheroes" style="padding-top: 5px;">
+    
+    <!-- Favorite superheroes will be displayed here -->
+  </div>
+  
+  
+  <script>
+    const favoriteSuperheroesContainer = document.getElementById('favoriteSuperheroes');
+
+    
+    // Function to display favorite superheroes
+    function displayFavoriteSuperheroes() {
+      favoriteSuperheroesContainer.innerHTML = '';
+    
+      favoriteSuperheroes.forEach((superhero) => {
+        const heroCard = document.createElement('div');
+        heroCard.className = 'heroCard';
+        heroCard.innerHTML = `
+        <div class="col-md-2">
+        <div class="superhero-card">
+          <img src="${superhero.thumbnail.path}.${superhero.thumbnail.extension}" alt="${superhero.name}">
+          <button class="removeButton btn btn-danger" style="color:black;">Remove from favourites</button>
+          <div class="superhero-name">${superhero.name}</div>
+          </div>
+        </div>`;
+    
+        heroCard.querySelector('.removeButton').addEventListener('click', () => {
+          removeFromFavorites(superhero.id);
+        });
+    
+        heroCard.addEventListener('click', () => {
+          window.location.href = `favaoritespage.html?id=${superhero.id}`;
+        });
+    
+        favoriteSuperheroesContainer.appendChild(heroCard);
+      });
+    }
+    
+    // Function to remove a superhero from favorites
+    function removeFromFavorites(superheroId) {
+      favoriteSuperheroes = favoriteSuperheroes.filter((favorite) => favorite.id !== superheroId);
+      localStorage.setItem('favoriteSuperheroes', JSON.stringify(favoriteSuperheroes));
+      displayFavoriteSuperheroes();
+    }
+    
+    // Display favorite superheroes on page load
+    let favoriteSuperheroes = JSON.parse(localStorage.getItem('favoriteSuperheroes')) || [];
+     displayFavoriteSuperheroes();
+    </script>
+     <div class="footer">
+      <p>&copy; 2023 Marvel</p>
+    </div>
+
+</body>
+</html>
